@@ -89,7 +89,7 @@ def export_multiband_tiff(image, bands, filename, region, scale=30):
 def export_to_drive(image, bands, region, description='landsat_multiband_export', folder='EarthEngine', scale=30):
     multiband_image = image.select(bands)
     task = ee.batch.Export.image.toDrive(
-        ee_object=multiband_image,
+        image=multiband_image,
         description=description,
         folder=folder,
         fileNamePrefix=description,
