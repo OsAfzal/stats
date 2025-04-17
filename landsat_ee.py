@@ -55,13 +55,13 @@ def image_by_date(collection, target_date_str, days_buffer=20, verbose=True):
     # Safely check if an image was found
     if image is None or image.getInfo() is None:
         if verbose:
-            print(f"❌ No image found within ±{days_buffer} days of {target_date_str}")
+            print(f"No image found within ±{days_buffer} days of {target_date_str}")
         return None
 
     if verbose:
         date_ms = image.get('system:time_start').getInfo()
         date_str = datetime.utcfromtimestamp(date_ms / 1000).strftime('%Y-%m-%d')
-        print(f"✅ Found image closest to {target_date_str}: {date_str}")
+        print(f"Found image closest to {target_date_str}: {date_str}")
 
     return image
 
