@@ -73,6 +73,32 @@ def filter_by_path_row(collection, path, row):
         ee.Filter.eq('WRS_ROW', row)
     ))
 
+# Joining multiple WRS tiles
+def tiles_join(collection, target_date_str, region, days_buffer=10, verbose=True):
+    
+    target_date = ee.Date(target_date_str)
+    buffer_start = target_date.advance(-days_buffer, 'day')
+    buffer_end = target_date.advance(days_buffer, 'day')
+
+    # Filter by date and region
+    filtered = collection \
+        .filterDate(buffer_start, buffer_end) \
+        .filterBounds(region)
+
+    count = filtered.size().getInfo()
+    if count == 0:
+        if verbose:
+            print(f"No images found within ±{days_buffer} days of {target_date_str}")
+        return None
+
+    # Create median composite to merge overlapping tiles
+    composite = filtered.median().clip(region)
+
+    if verbose:
+        print(f"Composite image from {count} overlapping scenes within ±{days_buffer} days of {target_date_str}")
+
+    return composite
+
 # Export multi-band image as GeoTIFF to local
 def export_multiband_tiff(image, bands, filename, region, scale=30):
     multiband_image = image.select(bands)
